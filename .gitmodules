@@ -1,0 +1,9 @@
+[submodule "relayserver"]
+	path = relayserver
+	url = ../relayserver.git
+[submodule "website"]
+	path = website
+	url = ../website.git
+[submodule "gameserver"]
+	path = gameserver
+	url = ../gameserver.git
