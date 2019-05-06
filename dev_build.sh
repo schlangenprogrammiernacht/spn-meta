@@ -11,7 +11,7 @@ popd
 
 header Building RelayServer
 pushd relayserver
-mkdir build
+mkdir -p build
 cd build
 cmake ..
 make -j4
