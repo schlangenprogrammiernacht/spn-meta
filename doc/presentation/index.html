@@ -69,8 +69,12 @@ exclude: true
 # Einführung
 
 - „Multiplayer-Snake“ nach dem Vorbild von [slither.io](http://slither.io)
-- Autonome Schlangen, keine Benutzerinteraktion
+--
+
 - Ziel: möglichst viel fressen, groß werden und dabei nicht mit anderen kollidieren
+--
+
+- Autonome Schlangen, keine Benutzerinteraktion
 
 --
 
@@ -122,6 +126,27 @@ exclude: true
 
 ![system](img/System_blank.svg)
 
+???
+
+## Aufbau des Systems
+
+1. **Website**
+ - Schnittstelle zum Benutzer
+ - Codeupload, Versionsverwaltung, Visualisierung
+
+2. **Gameserver**
+ - Führt alle Berechnungen auf der Spielwelt aus
+ - Verwaltet die Bot-Prozesse
+ - Stellt Weltzustand und Spielverlauf als Netzwerkstream bereit
+
+3. **Relayserver**
+ - Liest den Stream vom Gameserver
+ - Verteilt den Weltzustand über Websockets
+
+4. **Docker-Builder** (Neu)
+ - Bereitet hochgeladene Bots für die Ausführung im Gameserver vor
+
+
 ---
 
 # Was im Hintergrund passiert (II/IV)
@@ -163,34 +188,6 @@ class: center, middle, dark, snakebg
 .centered-large[
 	» schlangen.bytewerk.org «
 ]
-
----
-
-exclude: true
-
-# Was im Hintergrund passiert (I)
-
-## Aufbau des Systems
-
-1. **Website**
- - Schnittstelle zum Benutzer
- - Codeupload, Versionsverwaltung, Visualisierung
-
---
-2. **Gameserver**
- - Führt alle Berechnungen auf der Spielwelt aus
- - Verwaltet die Bot-Prozesse
- - Stellt Weltzustand und Spielverlauf als Netzwerkstream bereit
-
---
-3. **Relayserver**
- - Liest den Stream vom Gameserver
- - Verteilt den Weltzustand über Websockets
-
---
-4. **Docker-Builder** (Neu)
- - Bereitet hochgeladene Bots für die Ausführung im Gameserver vor
-
 
 		</textarea>
 		<script src="remark-latest.min.js">
