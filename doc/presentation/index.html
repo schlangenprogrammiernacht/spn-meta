@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Schlangenprogrammiernacht 2.0</title>
+		<meta charset="utf-8">
+		<style>
+			@font-face {
+				font-family: 'Yanone Kaffeesatz';
+				font-style: normal;
+				font-weight: 400;
+				src: local('Yanone Kaffeesatz Regular'), local('YanoneKaffeesatz-Regular'), url(fonts/Yanone_Kaffeesatz_Regular.ttf) format('truetype');
+			}
+
+			@import url(https://fonts.googleapis.com/css?family=Droid+Sans:400,700,400italic);
+			@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+			body {
+				font-family: 'Droid Serif';
+			}
+			h1, h2, h3 {
+				font-family: 'Yanone Kaffeesatz';
+				font-weight: normal;
+			}
+			.remark-code, .remark-inline-code { font-family: 'monospace'; }
+
+			.centered-large {
+				text-align: center;
+				font-weight: bold;
+				font-size: 1.5em;
+			}
+
+			.dark {
+				color: white;
+				background-color: black;
+			}
+
+			.snakebg {
+				background-image: url(img/background_enlarged.png);
+				background-size: 100%;
+				background-position: 50% -0.3em;
+			}
+			
+			img { width: 100%; }
+		</style>
+	</head>
+	<body>
+		<textarea id="source">
+
+class: center, middle, dark, snakebg
+count: false
+
+# Schlangenprogrammiernacht 2.0
+
+Ein Programmierspiel für die GPN19
+
+---
+
+exclude: true
+
+# Agenda
+
+1. Einführung
+2. Neue Features
+3. Aufbau des Backends
+4. Demo
+
+---
+
+# Einführung
+
+- „Multiplayer-Snake“ nach dem Vorbild von [slither.io](http://slither.io)
+- Autonome Schlangen, keine Benutzerinteraktion
+- Ziel: möglichst viel fressen, groß werden und dabei nicht mit anderen kollidieren
+
+--
+
+## Rückblick: SPN auf der GPN18
+
+- Programmiersprache Lua
+--
+
+- \>350 laufende Bots
+--
+
+- ca. 5 FPS ☹
+--
+ ⇒ **dieses Jahr soll das besser laufen!**
+
+---
+
+# Neue Features
+
+- Neues Backend auf Docker-Basis
+- Neue Programmiersprache: C++
+- Überarbeitete IDE
+- Mehr Infos über die Server-Einstellungen
+- Persistenter Speicher für die Bots
+
+---
+
+# Umgebung für den Bot-Code
+
+- G++ 8 auf Alpine Linux
+- Compiler-Flags: `-Wall -pedantic -O2 -g -DNDEBUG -std=gnu++14 `
+- Abstraktionsschicht für Kommunikation mit dem Gameserver
+
+--
+
+## Ressourcenbeschränkung
+
+- 1 „CPU“
+- 32 MiB RAM, kein Swap
+- Dateisystem nur lesbar (außer `/tmp` und `/run`)
+- kein Netzwerk
+- maximale Antwortzeit: 10 ms
+
+---
+
+# Was im Hintergrund passiert (I/IV)
+
+## Systemkomponenten
+
+![system](img/System_blank.svg)
+
+---
+
+# Was im Hintergrund passiert (II/IV)
+
+## Upload und Kompilieren des Bot-Codes
+
+![system](img/System_build.svg)
+
+---
+
+# Was im Hintergrund passiert (III/IV)
+
+## Ausführen des Bots
+
+![system](img/System_run.svg)
+
+---
+
+# Was im Hintergrund passiert (IV/IV)
+
+## Daten für die Visualisierung
+
+![system](img/System_viewer.svg)
+
+---
+
+class: middle, center
+
+# Demo
+
+[Hier klicken!](http://localhost:8000)
+
+---
+
+class: center, middle, dark, snakebg
+
+# Viel Spaß beim Spielen!
+
+.centered-large[
+	» schlangen.bytewerk.org «
+]
+
+---
+
+exclude: true
+
+# Was im Hintergrund passiert (I)
+
+## Aufbau des Systems
+
+1. **Website**
+ - Schnittstelle zum Benutzer
+ - Codeupload, Versionsverwaltung, Visualisierung
+
+--
+2. **Gameserver**
+ - Führt alle Berechnungen auf der Spielwelt aus
+ - Verwaltet die Bot-Prozesse
+ - Stellt Weltzustand und Spielverlauf als Netzwerkstream bereit
+
+--
+3. **Relayserver**
+ - Liest den Stream vom Gameserver
+ - Verteilt den Weltzustand über Websockets
+
+--
+4. **Docker-Builder** (Neu)
+ - Bereitet hochgeladene Bots für die Ausführung im Gameserver vor
+
+
+		</textarea>
+		<script src="remark-latest.min.js">
+		</script>
+		<script>
+			var slideshow = remark.create({
+					ratio: "16:9",
+					countIncrementalSlides: false
+				});
+		</script>
+	</body>
+</html>
