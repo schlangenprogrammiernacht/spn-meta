@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cd website
 source env/bin/activate
