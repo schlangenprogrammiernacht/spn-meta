@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "INFO: running RelayServer in endless loop."
 
