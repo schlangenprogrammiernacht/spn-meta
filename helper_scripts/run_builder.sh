@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 cd website
 source env/bin/activate
-./docker_builder.py
+./manage.py docker_builder
 echo Docker builder terminated with code $?. Virtual environment deactivated.
 
 deactivate
