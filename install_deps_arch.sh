@@ -1,15 +1,17 @@
 #!/bin/sh
 
-sudo pacman -S --needed base-devel \
+if [ '$EUID' -ne 0 ]
+    then echo 'This script needs to be run as root.'
+    exit
+fi
+
+pacman -S --needed base-devel \
+    docker \
     eigen \
     mariadb \
-    gunicorn \
     libjpeg-turbo \
-    python-django \
-    python-mysqlclient \
-    python-pillow \
-    python-sqlparse
+    python-virtualenv
 
 echo 'Dependencies from AUR:'
 echo 'python-django-widget-tweaks'
-echo 'mysql-connector-c++ (modded PKGBUILD as in comments)'
+echo 'mysql-connector-c++ (modded PKGBUILD as in package comments)'
