@@ -34,10 +34,11 @@ If this is your initial setup, you first need to set up `mariadb`. There's [a pr
 - Configure database connection in `gameserver/src/Environment.h`
 - Create `website/Programmierspiel/local_settings.py` from one of the templates in the same directory and configure database connection
 
-You'll want to use the database and the credentials you set up in `mariadb`. If you've never set up docker before, add yourself to the `docker` group. Also don't forget to start the `docker` service.
+You'll want to use the database and the credentials you set up in `mariadb`. If you've never set up docker before, add yourself to the `docker` group (and re-login to make it effective). Also don't forget to start the `docker` service.
 
 ```\sh
-I'm not sure what the inter-dist version of that cmd was, pls insert here
+$ gpasswd -a username docker
+$ systemctl start docker
 ```
 
 Then you'll need to pull the `alpine` docker image (this is the image the bots will run on, in seperate containers):
@@ -82,7 +83,7 @@ return (window.location.protocol == "https:" ? "wss://" : "ws://") + window.loca
 If you just want a quick and dirty testing setup, uncomment
 
 ```sh
-sudo gameserver/docker4bots/00_setup_shm_for_test.sh
+gameserver/docker4bots/00_setup_shm_for_test.sh
 ```
 
-in `helper_scripts/run_dev_website.sh`.
+in `helper_scripts/run_dev_website.sh` (note that the `00_setup_shm_for_test.sh` script requires `sudo` to work properly).
