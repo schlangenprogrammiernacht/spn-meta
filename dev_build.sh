@@ -28,3 +28,9 @@ pip install -r requirements.txt
 ./manage.py migrate
 deactivate
 popd
+
+header Creating shared memory directory
+if [ ! -d /mnt/spn_shm ]; then
+    mkdir /mnt/spn_shm
+    chmod 777 /mnt/spn_shm
+fi
