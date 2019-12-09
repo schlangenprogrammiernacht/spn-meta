@@ -12,4 +12,5 @@ apt install \
 	cmake \
 	libssl-dev \
 	python3-venv \
-	libmariadbclient-dev
+	libmariadbclient-dev \
+	libmariadb-dev-compat
