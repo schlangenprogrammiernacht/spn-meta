@@ -7,4 +7,9 @@ zypper install --no-recommends \
 	libmysqlcppconn-devel \
 	zlib-devel \
 	python3-devel \
-	libjpeg8-devel
+	libjpeg8-devel \
+	docker \
+	cmake \
+	libopenssl-devel \
+	libmariadb-devel \
+	tmux
