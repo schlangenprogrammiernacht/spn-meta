@@ -11,10 +11,7 @@ popd
 
 header Building RelayServer
 pushd relayserver
-mkdir -p build
-cd build
-cmake ..
-make -j4
+./make.sh -j4
 popd
 
 header Setting up Django virtual environment and applying migrations
