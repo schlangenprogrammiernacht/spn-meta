@@ -70,7 +70,7 @@ in that db, you now need to adjust some configuration files:
 - Configure database connection in `gameserver/src/Environment.h`
 - Copy `website/Programmierspiel/local_settings.py.template` to
   `website/Programmierspiel/local_settings.py` and configure database
-  connection
+  connection.
 
 ### Configuring Docker
 
@@ -94,6 +94,40 @@ Finally, build the base image for the bots:
 
 ```sh
 $ gameserver/docker4bots/0_build_spn_cpp_base.sh
+```
+
+### (Not) Setting Up a Reverse Proxy
+
+It is recommended (and in a production setup mandatory) to use a reverse
+proxy in front of the website.
+
+The reverse proxy separates the viewer websocket connection from the normal
+website requests and redirects it to the _relayserver_. It also serves static
+files in the production setup (see below).
+
+#### Nginx on the Host
+
+There is a template configuration in `helper_scripts/nginx.conf`. Copy it to
+your Nginx configuration and adjust it to your needs.
+
+#### Nginx in Docker
+
+For a quick setup, you can also run Nginx in a Docker container. To do so, use
+the script `helper_scripts/run_reverseproxy.sh`.
+
+#### Running Without a Reverse Proxy
+
+If you don't want to set up a reverse proxy, you can alternatively set up a
+little hack in `website/visualization/Game.js` by inserting
+
+```js
+return 'ws://localhost:9009/websocket';
+```
+
+above
+
+```js
+return (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + "/websocket";
 ```
 
 ### Setting up shared memory
@@ -144,40 +178,56 @@ $ ./dev_manual_tmux.sh
 There’s also a script that runs all programs directly in a `tmux` session:
 
 ```sh
-$ ./dev_run.sh
+$ ./run.sh
 ```
 
-### (Not) Setting Up a Reverse Proxy
+If you use the template `nginx.conf` as-is, you should now be able to access
+the SPN server on http://localhost:3000 .
 
-It is recommended (and in a production setup mandatory) to use a reverse
-proxy in front of the website.
+**NEVER** open this server to the Internet. Django’s debug mode will allow
+everybody to gain full access to the user account Django is running on. To get
+a secure setup, read the next section.
 
-The reverse proxy separates the viewer websocket connection from the normal
-website requests and redirects it to the _relayserver_. It also serves static
-files in the production setup (see below).
+### Setting up a Production System
 
-#### Nginx on the Host
+This section modifies the setup described above such that it can be provided to
+a wider audience.
 
-There is a template configuration in `helper_scripts/nginx.conf`. Copy it to
-your Nginx configuration and adjust it to your needs.
+#### Django configuration
 
-#### Nginx in Docker
+Django’s debug mode must be disabled and static files should be served by the
+reverse proxy. To accomplish this, adjust
+`website/Programmierspiel/local_settings.py` as follows (add variables that
+don’t exist yet):
 
-For a quick setup, you can also run Nginx in a Docker container. To do so, use
-the script `helper_scripts/run_reverseproxy.sh`.
-
-#### Running Without a Reverse Proxy
-
-If you don't want to set up a reverse proxy, you can alternatively set up a
-little hack in `website/visualization/Game.js` by inserting
-
-```js
-return 'ws://localhost:9009/websocket';
+```python
+DEBUG = False
+ALLOWED_HOSTS = ['localhost', 'your.domain.here']
+SECRET_KEY = 'make_sure_you_do_not_use_the_one_in_the_template!'
+STATIC_ROOT = '/var/www/spn/staticfiles'
 ```
 
-above
+#### Static Files
 
-```js
-return (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + "/websocket";
+Add the following to your Nginx configuration:
+
+```
+location /static/ {
+	alias /var/www/spn/staticfiles/;
+}
 ```
 
+Then, store the static files in the configured directory:
+
+```sh
+$ cd website
+$ source env/bin/activate
+$ ./manage.py collectstatic
+```
+
+#### Final remarks
+
+Restart Nginx and all SPN programs.
+
+You now have a safe SPN production server that hopefully succeeds in killing
+some productivity 😈
