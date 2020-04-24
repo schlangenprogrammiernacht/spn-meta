@@ -1,0 +1,44 @@
+Add the following to your collectd.conf:
+
+<Plugin curl_json>
+  <URL "https://your-spn-host/api/v1/stats">
+    Instance "spn_stats"
+    <Key "livestats/fps">
+      Type "gauge"
+      # Expect: 1
+    </Key>
+    <Key "livestats/frame">
+      Type "gauge"
+      # Expect: 2
+    </Key>
+    <Key "livestats/running_bots">
+      Type "gauge"
+      # Expect: 3
+    </Key>
+    <Key "livestats/start_queue_len">
+      Type "gauge"
+      # Expect: 4
+    </Key>
+    <Key "livestats/stop_queue_len">
+      Type "gauge"
+      # Expect: 5
+    </Key>
+    <Key "livestats/living_mass">
+      Type "gauge"
+      # Expect: 6
+    </Key>
+    <Key "livestats/dead_mass">
+      Type "gauge"
+      # Expect: 7
+    </Key>
+    <Key "livestats/current_frame">
+      Type "gauge"
+      # Expect: 8
+    </Key>
+    <Key "buildstats/*">
+      Type "gauge"
+      # Expect: 9
+    </Key>
+  </URL>
+</Plugin>
+
