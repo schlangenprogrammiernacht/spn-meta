@@ -165,6 +165,16 @@ Python virtual environment for the Django-based website:
 $ ./build.sh
 ```
 
+### Building the Documentation for the C++ Bot Framework
+
+To make the documentation available to the players, do the following:
+
+```sh
+$ cd website/docs/doxygen
+$ mkdir -p ../static/docs/doxygen_cpp
+$ doxygen
+```
+
 ### Running the Programs
 
 Now you can run the programs. If you want to run them manually, there is a
