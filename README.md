@@ -93,7 +93,8 @@ $ systemctl start docker
 Finally, build the base image for the bots:
 
 ```sh
-$ gameserver/docker4bots/0_build_spn_cpp_base.sh
+$ cd gameserver/docker4bots
+$ ./0_build_spn_cpp_base.sh
 ```
 
 ### (Not) Setting Up a Reverse Proxy
