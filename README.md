@@ -34,7 +34,7 @@ We will assume here that this user is called _spn_. You can create it as
 follows:
 
 ```sh
-$ useradd -m thomas
+$ useradd -m spn
 ```
 
 ### Prepare the repository
