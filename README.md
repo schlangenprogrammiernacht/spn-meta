@@ -34,7 +34,7 @@ We will assume here that this user is called _spn_. You can create it as
 follows:
 
 ```sh
-$ useradd -m thomas
+$ useradd -m spn
 ```
 
 ### Prepare the repository
@@ -93,7 +93,8 @@ $ systemctl start docker
 Finally, build the base image for the bots:
 
 ```sh
-$ gameserver/docker4bots/0_build_spn_cpp_base.sh
+$ cd gameserver/docker4bots
+$ ./0_build_spn_cpp_base.sh
 ```
 
 ### (Not) Setting Up a Reverse Proxy
