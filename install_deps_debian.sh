@@ -8,9 +8,11 @@ apt install \
 	zlib1g-dev \
 	libpython3-dev \
 	libjpeg-dev \
-	docker \
+	docker.io \
 	cmake \
 	libssl-dev \
 	python3-venv \
 	libmariadbclient-dev \
-	libmariadb-dev-compat
+	libmariadb-dev-compat \
+	tmux \
+	doxygen
