@@ -242,3 +242,9 @@ Restart Nginx and all SPN programs.
 
 You now have a safe SPN production server that hopefully succeeds in killing
 some productivity 😈
+
+## External Contributions
+
+This is a collection of SPN-related things developed by others.
+
+* [Ansible role for installing SPN on Debian 10](https://git.bingo-ev.de/geierb/spn-ansible) by citronalco
