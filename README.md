@@ -212,7 +212,7 @@ don’t exist yet):
 
 ```python
 DEBUG = False
-ALLOWED_HOSTS = ['localhost', 'your.domain.here']
+ALLOWED_HOSTS = ['127.0.0.1', 'your.domain.here']
 SECRET_KEY = 'make_sure_you_do_not_use_the_one_in_the_template!'
 STATIC_ROOT = '/var/www/spn/staticfiles'
 ```
