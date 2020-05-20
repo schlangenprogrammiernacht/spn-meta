@@ -23,6 +23,14 @@ openSUSE (Tumbleweed)   | `./install_deps_opensuse.sh`
 Debian                  | `./install_deps_debian.sh`
 Arch Linux              | `./install_deps_arch.sh`
 
+### Debian
+If you are running Debian 8 you may need to install Docker via:
+```
+apt install curl
+curl -sSL https://get.docker.com/ | sh
+```
+Remove the `docker.io` line in the install script in this case.
+
 ## Server setup
 
 This section describes the setup of a server system. It starts with setting up
