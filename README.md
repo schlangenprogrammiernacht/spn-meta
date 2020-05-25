@@ -20,7 +20,7 @@ out what you need to install):
 Distribution            | Script
 ---                     | ---
 openSUSE (Tumbleweed)   | `./install_deps_opensuse.sh`
-Debian                  | `./install_deps_debian.sh`
+Debian (>=9)                  | `./install_deps_debian.sh`
 Arch Linux              | `./install_deps_arch.sh`
 
 ## Server setup
