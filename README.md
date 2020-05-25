@@ -148,7 +148,8 @@ $ mkdir /mnt/spn_shm
 For quick testing, there is a script that sets up the _tmpfs_:
 
 ```sh
-$ gameserver/docker4bots/00_setup_shm_for_test.sh
+$ cd gameserver/docker4bots
+$ ./00_setup_shm_for_test.sh
 ```
 
 If you want a more permanent setup, add this line to `/etc/fstab`:
