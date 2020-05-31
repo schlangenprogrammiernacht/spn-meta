@@ -68,7 +68,7 @@ When you're done setting up one database and one user which has all privileges
 in that db, you now need to adjust some configuration files:
 
 - Configure database connection in `gameserver/src/Environment.h`
-- Copy `website/Programmierspiel/local_settings.py.template` to
+- Copy `website/Programmierspiel/local_settings.py.example` to
   `website/Programmierspiel/local_settings.py` and configure database
   connection.
 
