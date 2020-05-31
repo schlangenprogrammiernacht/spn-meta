@@ -72,6 +72,8 @@ in that db, you now need to adjust some configuration files:
   `website/Programmierspiel/local_settings.py` and configure database
   connection.
 
+Use the same database config for both files, even if the examples differ.
+
 ### Configuring Docker
 
 On most systems, it is sufficient to add a user to the _docker_ group in order
