@@ -23,5 +23,6 @@ fi
 source env/bin/activate
 pip install -r requirements.txt
 ./manage.py migrate
+./manage.py loaddata core/fixtures/ProgrammingLanguage.json
 deactivate
 popd
