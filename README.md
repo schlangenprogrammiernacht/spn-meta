@@ -168,6 +168,37 @@ Python virtual environment for the Django-based website:
 $ ./build.sh
 ```
 
+Note: if you upgrade from an old version (before support for multiple
+programming languages was implemented), the script might fail during the
+database migration. In that case, import the programming language data and
+retry the migration:
+
+```sh
+$ cd website
+$ source env/bin/activate
+(env) $ ./manage.py migrate # might still fail
+(env) $ ./manage.py loaddata core/fixtures/ProgrammingLanguage.json
+(env) $ ./manage.py migrate # should work now
+(env) $ deactivate
+```
+
+If you upgrade from a previous version, the active bot binaries should be
+recompiled, as the IPC format may have changed. To trigger that, open the mysql
+client and run the following SQL query in your database:
+
+```sh
+$ mysql -u spn -p spn
+```
+
+```sql
+UPDATE core_snakeversion SET compile_state="not_compiled" WHERE id IN (SELECT active_snake_id FROM core_userprofile);
+```
+
+This rebuilds all currently active binaries. To rebuild all snake versions ever
+saved, remove the `WHERE` clause from the query. Beware: rebuilding everything
+can take a very long time and users cannot run new versions until it the
+rebuild is complete.
+
 ### Building the Documentation for the Bot Frameworks
 
 The documentation for the bot frameworks is built using the Docker images that
