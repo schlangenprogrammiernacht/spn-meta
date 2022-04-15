@@ -92,11 +92,11 @@ Also don't forget to start the `docker` service.
 $ systemctl start docker
 ```
 
-Finally, build the base image for the bots:
+Finally, build the base images for the bots:
 
 ```sh
 $ cd gameserver/docker4bots
-$ ./0_build_spn_cpp_base.sh
+$ ./00_build_all_base_containers.sh
 ```
 
 ### (Not) Setting Up a Reverse Proxy
@@ -168,14 +168,16 @@ Python virtual environment for the Django-based website:
 $ ./build.sh
 ```
 
-### Building the Documentation for the C++ Bot Framework
+### Building the Documentation for the Bot Frameworks
 
-To make the documentation available to the players, do the following:
+The documentation for the bot frameworks is built using the Docker images that
+are also used to build the bots. If you checked out the standard submodule
+structure, you can use the following script to build the documentation and make
+it available to users via the website:
 
 ```sh
-$ cd website/docs/doxygen
-$ mkdir -p ../static/docs/doxygen_cpp
-$ doxygen
+$ cd gameserver/docker4bots/
+$ ./01_build_all_docs_for_website.sh
 ```
 
 ### Running the Programs
