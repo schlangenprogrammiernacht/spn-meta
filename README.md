@@ -283,3 +283,7 @@ some productivity 😈
 This is a collection of SPN-related things developed by others.
 
 * [Ansible role for installing SPN on Debian 10](https://git.bingo-ev.de/geierb/spn-ansible) by citronalco
+
+## Adding a new programming language
+
+This is described in a [separate document](HOWTO_add_programming_languages.md).
