@@ -11,6 +11,10 @@ Schlangenprogrammiernacht is a programming game written for the
 [slither.io](https://slither.io), but here only bots written by the players
 play against each other in a controlled environment.
 
+The following screenshot gives an impression of the integrated IDE:
+
+![The integrated IDE](doc/screenshots/ide.webp)
+
 ## Prerequisites
 
 For both development and production setups you need to have some dependencies
