@@ -114,8 +114,9 @@ files in the production setup (see below).
 
 #### Nginx on the Host
 
-There is a template configuration in `helper_scripts/nginx.conf`. Copy it to
-your Nginx configuration and adjust it to your needs.
+There is a template configuration in
+[`helper_scripts/nginx.conf`](helper_scripts/nginx.conf). Copy it to your Nginx
+configuration and adjust it to your needs.
 
 #### Nginx in Docker
 
@@ -231,8 +232,8 @@ There’s also a script that runs all programs directly in a `tmux` session:
 $ ./run.sh
 ```
 
-If you use the template `nginx.conf` as-is, you should now be able to access
-the SPN server on http://localhost:3000 .
+If you use the template [`nginx.conf`](helper_scripts/nginx.conf) as-is, you
+should now be able to access the SPN server on http://localhost:3000 .
 
 **NEVER** open this server to the Internet. Django’s debug mode will allow
 everybody to gain full access to the user account Django is running on. To get
