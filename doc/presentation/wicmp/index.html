@@ -310,6 +310,8 @@ Unterschiede zum Kompilieren:
   - Datei auf `tmpfs` (ein Dateisystem im RAM)
   - per `mmap()` in den Speicherbereich der teilnehmenden Prozesse abgebildet
   - Inhalt durch C-Strukturen definiert (mit vorgegebenem 4-Byte-Alignment)
+--
+
 - UNIX-Socket:
   - Typ `SOCK_SEQPACKET`: Pakete werden am Stück, verlustlos und in gleicher Reihenfolge übermittelt
   - effizient zur Signalisierung, wenn die Pakete in eine Speicherseite (4 KiB) passen
@@ -317,15 +319,28 @@ Unterschiede zum Kompilieren:
 ---
 
 # Ablauf der Kommunikation
+--
 
 1. Gameserver befüllt die Strukturen im gemeinsamen Speicher.
+--
+
 2. Gameserver schickt über das UNIX-Socket das auszuführende Kommando an den Bot.
   - `INIT`: Initialisierung des Bots, z.B. Setzen der Farben. Entspricht `init()` im User-Code.
   - `STEP`: Einen Bewegungsschritt ausführen. Entspricht `step()` im User-Code.
+--
+
 3. Gameserver wartet per `poll()` auf dem UNIX-Socket auf eine Antwort (mit Timeout!).
+--
+
 4. Bot rechnet, schreibt z.B. Farben oder Lognachrichten in den gemeinsamen Speicher, etc.
+--
+
 5. Bot signalisiert per UNIX-Socket dem Gameserver, was er machen möchte (durch Senden einer `Response`-Struktur).
+--
+
 6. Gameserver verarbeitet die Response-Struktur und die Daten im gemeinsamen Speicher.
+
+--
 
 Ein Timeout in Schritt 3 führt zum Ignorieren dieses Bots in diesem Frame. Bei
 zu vielen Timeouts wird der Bot-Prozess beendet.
