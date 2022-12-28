@@ -26,9 +26,24 @@
 			.centered-large {
 				text-align: center;
 				font-weight: bold;
-				font-size: 1.5em;
+				font-size: 1.4em;
 			}
 
+			.centered-large a {
+				color: white;
+				text-decoration: none;
+			}
+
+			.bottom-note {
+				text-align: center;
+				position: absolute;
+				bottom: 2em;
+				left: 0;
+				width: 100%;
+				display: block;
+				font-size: 0.8em;
+				color: #aaa;
+			}
 			.dark {
 				color: white;
 				background-color: black;
@@ -55,39 +70,9 @@ count: false
 
 Ein Blick hinter die Kulissen
 
----
-
-exclude: true
-
-# Agenda
-
-1. Einführung
-2. Frontend-Demo
-2.1 Registrieren
-2.2 Standard-Code starten
-2.3 Code anpassen (Winkel ändern) und neu kompilieren
-3. Backend-Übersicht
-3.1 Beschreibung der Komponenten
-3.2 Kompilieren des Bot-Codes
-3.3 Ausführen des Bot-Codes
-4. Docker als Sandbox
-4.1 User-Code wird nur in der Sandbox kompiliert und ausgeführt!
-4.2 „Sandbox-Features“ anhand der "docker run"-Parameter erklären
-4.3 Bash-Skript als Container-Einstiegspunkt
-5. Kommunikation zwischen Bot und Gameserver: UNIX Sockets + shared memory
-5.1 UNIX Sockets
-5.1.1 Rein lokales Socket, ähnlich zu Named Pipes, aber bidirektional
-5.1.2 SEQPACKET wird verwendet: Pakete als Einheit, Reihenfolge wird beibehalten
-5.2 Shared memory
-5.2.1 Sowohl Gameserver als auch Bot mmap-en die gleiche Datei aus einem tmpfs
-5.2.2 Durch C-Structs definiert, mit definiertem Alignment
-5.3 Ablauf
-5.3.1 Gameserver füllt Shared Memory mit dem Weltzustand für den Bot
-5.3.1 Gameserver schickt Kommando (INIT/STEP) via UNIX Socket
-5.3.3 Gameserver wartet auf Antwort vom Bot, mit Timeout (mit poll())
-6. Mehrere Programmiersprachen
-6.1 Ein Docker-Image pro Sprache
-6.2 Liste unterstützter Sprachen steht in der Datenbank (bzw. JSON-File)
+.bottom-note[
+	Ein Vortrag von cfr34k auf der WICMP 1.0
+]
 
 ---
 
@@ -145,10 +130,9 @@ exclude: true
 4. **Docker-Builder** (Neu)
  - Bereitet hochgeladene Bots für die Ausführung im Gameserver vor
 
-
 ---
 
-# Was im Hintergrund passiert (II/IV)
+# Was im Hintergrund passiert
 
 ## Upload und Kompilieren des Bot-Codes
 
@@ -156,7 +140,7 @@ exclude: true
 
 ---
 
-# Was im Hintergrund passiert (III/IV)
+# Was im Hintergrund passiert
 
 ## Ausführen des Bots
 
@@ -164,7 +148,7 @@ exclude: true
 
 ---
 
-# Was im Hintergrund passiert (IV/IV)
+# Was im Hintergrund passiert
 
 ## Daten für die Visualisierung
 
@@ -226,7 +210,7 @@ ENTRYPOINT ["/bot_wrapper.sh"]
 
 ## Container-Einstiegspunkt
 
-Beispiel eines `bot_wrapper.sh` für den C++-Container:
+Beispiel `gameserver/docker4bots/spn_cpp_base/bot_wrapper.sh` für den C++-Container:
 
 ```bash
 action="$1"
@@ -252,6 +236,8 @@ esac
 
 ## Kompilieren des Bot-Codes
 
+Aus `gameserver/docker4bots/1_build_spn_bot.sh`:
+
 ```bash
 docker run --rm                              \
     --memory=1G                              \
@@ -270,6 +256,8 @@ docker run --rm                              \
 # Docker als Sandbox
 
 ## Ausführen des Bot-Codes
+
+Aus `gameserver/docker4bots/2_run_spn_bot.sh`:
 
 ```bash
 docker run -d --rm                           \
@@ -361,6 +349,16 @@ count: false
 
 .centered-large[
 	» schlangen.bytewerk.org «
+]
+
+## … oder mitprogrammieren
+
+.centered-large[
+	» https://github.com/schlangenprogrammiernacht/ «
+]
+
+.bottom-note[
+	Präsentation von cfr34k 🄯 2022, CC BY-SA 4.0
 ]
 
 
