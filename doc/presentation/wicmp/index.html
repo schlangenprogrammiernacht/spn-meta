@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Schlangenprogrammiernacht 2.0</title>
+		<meta charset="utf-8">
+		<style>
+			@font-face {
+				font-family: 'Yanone Kaffeesatz';
+				font-style: normal;
+				font-weight: 400;
+				src: local('Yanone Kaffeesatz Regular'), local('YanoneKaffeesatz-Regular'), url(fonts/Yanone_Kaffeesatz_Regular.ttf) format('truetype');
+			}
+
+			@import url(https://fonts.googleapis.com/css?family=Droid+Sans:400,700,400italic);
+			@import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+			body {
+				font-family: 'Droid Serif';
+			}
+			h1, h2, h3 {
+				font-family: 'Yanone Kaffeesatz';
+				font-weight: normal;
+			}
+			.remark-code, .remark-inline-code { font-family: 'monospace'; }
+
+			.centered-large {
+				text-align: center;
+				font-weight: bold;
+				font-size: 1.4em;
+			}
+
+			.centered-large a {
+				color: white;
+				text-decoration: none;
+			}
+
+			.bottom-note {
+				text-align: center;
+				position: absolute;
+				bottom: 2em;
+				left: 0;
+				width: 100%;
+				display: block;
+				font-size: 0.8em;
+				color: #aaa;
+			}
+			.dark {
+				color: white;
+				background-color: black;
+			}
+
+			.snakebg {
+				background-image: url(img/background1.png);
+				background-size: 100%;
+				background-position: 50% -0.3em;
+			}
+			
+			img { width: 100%; }
+
+			ul, ol { line-height: 150%; }
+		</style>
+	</head>
+	<body>
+		<textarea id="source">
+
+class: center, middle, dark, snakebg
+count: false
+
+# Schlangenprogrammiernacht
+
+Ein Blick hinter die Kulissen
+
+.bottom-note[
+	Ein Vortrag von cfr34k auf der WICMP 1.0
+]
+
+---
+
+# Schlangenprogrammiernacht?
+
+- Ein Programmierspiel, ursprünglich für die Gulaschprogrammiernacht 18/19 entwickelt
+--
+
+- „Multiplayer-Snake“ nach dem Vorbild von [slither.io](http://slither.io)
+--
+
+- Ziel: möglichst viel fressen, groß werden und dabei nicht mit anderen kollidieren
+--
+
+- Autonome Schlangen, keine Benutzerinteraktion
+
+--
+
+## Frontend-Demo → [Hier entlang!](http://localhost:8000)
+
+---
+
+class: middle, center
+exclude: true
+
+# Frontend-Demo
+
+[Hier klicken!](http://localhost:8000)
+
+---
+
+# Was im Hintergrund passiert
+
+## Systemkomponenten
+
+![system](img/System_blank.svg)
+
+???
+
+## Aufbau des Systems
+
+1. **Website**
+ - Schnittstelle zum Benutzer
+ - Codeupload, Versionsverwaltung, Visualisierung
+
+2. **Gameserver**
+ - Führt alle Berechnungen auf der Spielwelt aus
+ - Verwaltet die Bot-Prozesse
+ - Stellt Weltzustand und Spielverlauf als Netzwerkstream bereit
+
+3. **Relayserver**
+ - Liest den Stream vom Gameserver
+ - Verteilt den Weltzustand über Websockets
+
+4. **Docker-Builder** (Neu)
+ - Bereitet hochgeladene Bots für die Ausführung im Gameserver vor
+
+---
+
+# Was im Hintergrund passiert
+
+## Upload und Kompilieren des Bot-Codes
+
+![system](img/System_build.svg)
+
+---
+
+# Was im Hintergrund passiert
+
+## Ausführen des Bots
+
+![system](img/System_run.svg)
+
+---
+
+# Was im Hintergrund passiert
+
+## Daten für die Visualisierung
+
+![system](img/System_viewer.svg)
+
+---
+
+# Docker als Sandbox
+
+- User können völlig frei programmieren → Absicherung des Hostsystems nötig
+--
+
+- Lösung: Linux _Control Groups_ (cgroups) und _Namespaces_:
+  - Kapseln Prozesse vom restlichen System ab und
+  - schränken verfügbare Ressourcen ein.
+--
+
+- Docker vereinfacht und formalisiert deren Konfiguration.
+--
+
+- Bonus: mehrere Programmiersprachen sind mit verschiedenen Docker-Images umsetzbar
+--
+
+- Im Docker-Image sind vorinstalliert:
+  - Die Toolchain für die jeweilige Programmiersprache
+  - Das Bot-Framework zur Kommunikation mit dem Gameserver
+  - Ein Shell-Skript als Einstiegspunkt
+
+---
+
+# Docker als Sandbox
+
+## Dockerfile
+
+Skript zum Aufbau des Docker-Images, z.B. für den C++-Container:
+
+```dockerfile
+FROM alpine
+
+RUN apk add --no-cache g++ cmake strace make doxygen
+RUN addgroup -S spnbot && adduser --uid 1337 --home /spnbot -S spnbot --shell /bin/sh -G spnbot
+
+ADD bot_wrapper.sh     /
+ADD spn_cpp_framework/ /spnbot/spn_cpp_framework
+
+RUN cd /spnbot/spn_cpp_framework && ./build.sh && chown -R spnbot /spnbot && mkdir /spnshm
+
+VOLUME /spnshm
+VOLUME /spndata
+
+USER spnbot
+ENTRYPOINT ["/bot_wrapper.sh"]
+```
+
+
+---
+
+# Docker als Sandbox
+
+## Container-Einstiegspunkt
+
+Beispiel `gameserver/docker4bots/spn_cpp_base/bot_wrapper.sh` für den C++-Container:
+
+```bash
+action="$1"
+
+case "$action" in
+    compile)   # copy the code in, build and move the binary out
+        cd /spnbot/spn_cpp_framework/
+        cp -f /spndata/usercode.cpp src/usercode.cpp
+        ./build.sh && cp build/bot /spndata/bot
+        ;;
+
+    run)       # Run the bot code
+        cd /spndata/ && exec ./bot
+        ;;
+
+    # further cases (like "doc") not shown in this example
+esac
+```
+
+---
+
+# Docker als Sandbox
+
+## Kompilieren des Bot-Codes
+
+Aus `gameserver/docker4bots/1_build_spn_bot.sh`:
+
+```bash
+docker run --rm                              \
+    --memory=1G                              \
+    --memory-swap=2G                         \
+    --cpus=1                                 \
+    --tmpfs /run                             \
+    --tmpfs /tmp                             \
+    --network none                           \
+    -v "$BOT_DATADIR:/spndata:rw"            \
+    --name "build_${BOT_NAME}_${VERSION_ID}" \
+    "spn_${PROGLANG}_base:latest" compile
+```
+
+---
+
+# Docker als Sandbox
+
+## Ausführen des Bot-Codes
+
+Aus `gameserver/docker4bots/2_run_spn_bot.sh`:
+
+```bash
+docker run -d --rm                           \
+    --memory=32M                             \
+    --memory-swap=32M                        \
+    --cpus=1                                 \
+    --read-only                              \
+    --tmpfs /run                             \
+    --tmpfs /tmp                             \
+    --network none                           \
+     -v "$BOT_DATADIR:/spndata:ro"           \
+     -v "$SPN_SHM_HOSTDIR/$BOT_NAME:/spnshm" \
+     --name "$CONTAINER_NAME"                \
+     "spn_${PROGLANG}_base:latest" run
+```
+
+???
+
+Unterschiede zum Kompilieren:
+
+- Weniger Speicher, kein Swap
+- Container ist nicht schreibbar
+- Shared Memory ist eingebunden (nur das des jeweiligen Bots!)
+
+---
+
+# Interprozesskommunikation
+
+- Jeder Bot bekommt in jedem Frame seine individuelle Sicht auf die Welt präsentiert.
+- Datengröße: 10 bis 100 KiB pro Bot und Frame.
+- Problem: Serieller Versand (z.B. FIFOs, Sockets) ist für große Datenmengen zu langsam.
+--
+
+- **Lösung:** _Shared Memory_ zum Datentausch + _UNIX-Socket_ zur Signalisierung!
+--
+
+- POSIX Shared Memory (wie `/dev/shm`):
+  - Datei auf `tmpfs` (ein Dateisystem im RAM)
+  - per `mmap()` in den Speicherbereich der teilnehmenden Prozesse abgebildet
+  - Inhalt durch C-Strukturen definiert (mit vorgegebenem 4-Byte-Alignment)
+--
+
+- UNIX-Socket:
+  - Typ `SOCK_SEQPACKET`: Pakete werden am Stück, verlustlos und in gleicher Reihenfolge übermittelt
+  - effizient zur Signalisierung, wenn die Pakete in eine Speicherseite (4 KiB) passen
+
+---
+
+# Ablauf der Kommunikation
+--
+
+1. Gameserver befüllt die Strukturen im gemeinsamen Speicher.
+--
+
+2. Gameserver schickt über das UNIX-Socket das auszuführende Kommando an den Bot.
+  - `INIT`: Initialisierung des Bots, z.B. Setzen der Farben. Entspricht `init()` im User-Code.
+  - `STEP`: Einen Bewegungsschritt ausführen. Entspricht `step()` im User-Code.
+--
+
+3. Gameserver wartet per `poll()` auf dem UNIX-Socket auf eine Antwort (mit Timeout!).
+--
+
+4. Bot rechnet, schreibt z.B. Farben oder Lognachrichten in den gemeinsamen Speicher, etc.
+--
+
+5. Bot signalisiert per UNIX-Socket dem Gameserver, was er machen möchte (durch Senden einer `Response`-Struktur).
+--
+
+6. Gameserver verarbeitet die Response-Struktur und die Daten im gemeinsamen Speicher.
+
+--
+
+Ein Timeout in Schritt 3 führt zum Ignorieren dieses Bots in diesem Frame. Bei
+zu vielen Timeouts wird der Bot-Prozess beendet.
+
+---
+
+class: center, middle, dark, snakebg
+count: false
+
+# Fragen?
+
+---
+
+class: center, middle, dark, snakebg
+count: false
+
+# Viel Spaß beim Spielen
+
+.centered-large[
+	» schlangen.bytewerk.org «
+]
+
+## … oder mitprogrammieren
+
+.centered-large[
+	» https://github.com/schlangenprogrammiernacht/ «
+]
+
+.bottom-note[
+	Präsentation von cfr34k 🄯 2022, CC BY-SA 4.0
+]
+
+
+		</textarea>
+		<script src="remark-latest.min.js">
+		</script>
+		<script>
+			var slideshow = remark.create({
+					ratio: "16:9",
+					countIncrementalSlides: false
+				});
+		</script>
+	</body>
+</html>
